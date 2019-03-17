@@ -22,16 +22,16 @@ class [[eosio::contract("addressbook")]] addressbook : public contract {
 			print("Name ==> ", user.value);
 			// code --> name of account owning this contract
 			// value accessed using the scoped '_code.value' variable
-			address_index addresses(_code, _code.value);
+			address_index bk_addresses(_code, _code.value);
 
 			// in Relational databases, this could be thought of as a 'SELECT * FROM PERSON WHERE PERSON.KEY == ?' clause,
 			// however, the relation isn't that direct! 
-			auto iter = addresses.find(user.value);
-			if (iter == addresses.end()) {
+			auto iter = bk_addresses.find(user.value);
+			if (iter == bk_addresses.end()) {
 				// create --> INSERT
 
 				// pass all variables in scope 'by reference' to the callback / lambda expression
-				addresses.emplace(user, [&] (auto& newRow) {
+				bk_addresses.emplace(user, [&] (auto& newRow) {
 					newRow.key = user;
 					newRow.first_name = first_name;
 					newRow.last_name = last_name;
@@ -42,7 +42,7 @@ class [[eosio::contract("addressbook")]] addressbook : public contract {
 				print("New USER created.");
 			} else {
 				// update --> UPDATE
-				addresses.modify(iter, user, [&] (auto& row) {
+				bk_addresses.modify(iter, user, [&] (auto& row) {
 					row.key = user;
 					row.first_name = first_name;
 					row.last_name = last_name;
@@ -59,11 +59,11 @@ class [[eosio::contract("addressbook")]] addressbook : public contract {
 		void erase(const name& user) {
 			require_auth(user);
 
-			address_index addresses(_code, _code.value);
-			auto iter = addresses.find(user.value);
+			address_index bk_addresses(_code, _code.value);
+			auto iter = bk_addresses.find(user.value);
 			// a record can't be deleted if it doesn't exist
-			eosio_assert(iter != addresses.end(), "User doesn't exist");
-			addresses.erase(iter);
+			eosio_assert(iter != bk_addresses.end(), "User doesn't exist");
+			bk_addresses.erase(iter);
 		}
 
 	private:
