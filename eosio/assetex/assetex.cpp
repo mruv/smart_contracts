@@ -121,13 +121,15 @@ class [[eosio::contract("assetex")]] assetex : public contract {
 		[[eosio::action]]
 		void transfer(const name& from, const name& to, const asset& quantity, const std::string& memo, uint64_t delay) {
 
+			print(from, " => ", to, "[ ", quantity, " ] for ", delay, " secs");
+
 			require_auth(from);
 			transaction sched_tx{};
 			sched_tx.actions.emplace_back(
-				permission_level(_self, "active"_n), 
-				_self,
-				"transferin"_n,
-				std::make_tuple(from, to, quantity, memo));
+				permission_level(from, "active"_n),
+				_self, // contract account
+				"transferin"_n, // action
+				std::make_tuple(from, to, quantity, memo)); // action parameters
 
 			sched_tx.delay_sec = delay;
 			sched_tx.send(now(), from);
