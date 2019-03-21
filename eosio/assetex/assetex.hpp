@@ -22,7 +22,7 @@ namespace assetex {
 	class [[eosio::contract("assetex")]] assetex : public contract {
 
 		public:
-			assetex(name self, name code, datastream<const char*> ds):contract(self, code, ds) {}
+			assetex(name self, name code, datastream<const char*> ds) : contract(self, code, ds) {}
 
 			[[eosio::action]] void create(const name& issuer, const asset& max_supply);
 			[[eosio::action]] void issue(const name& to, const asset& quantity, const std::string& memo);
@@ -32,7 +32,6 @@ namespace assetex {
 			void sub(const name& owner, const asset& value);
 
 		private:
-			// EOSIO Tables
 
 			// A data structure that defines the amount / quantity of an asset held by
 			// a single account.
